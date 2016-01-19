@@ -23,12 +23,10 @@ def login(driver):
   ##### Login to malwr.com ###
   ## input username
   driver.find_element_by_id("id_username").clear()
-  #driver.find_element_by_id("id_username").send_keys(raw_input('your username: '))
-  driver.find_element_by_id("id_username").send_keys("qazwsx")
+  driver.find_element_by_id("id_username").send_keys(raw_input('your username: '))
   ## input password
   driver.find_element_by_id("id_password").clear()
-  #driver.find_element_by_id("id_password").send_keys(getpass('your password: '))
-  driver.find_element_by_id("id_password").send_keys("SahX03nq7voV")
+  driver.find_element_by_id("id_password").send_keys(getpass('your password: '))
   ## click "Login" button
   driver.find_element_by_css_selector('body > div.container-fluid > form > div:nth-child(5) > div > button').click()
 
