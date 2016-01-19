@@ -43,12 +43,12 @@ def getDlUrls(driver):
   print "[Get URL List] success."
   return driver, malUrlList
 
-def getMalware(driver, urls):
+def dlTest( driver, urls):
+  print "----------------------------"
+  print "|  This is download test.  |"
+  print "----------------------------"
 
-  print "=================================="
-  print "|   access to Malware DL page.   |" 
-  print "=================================="
-  
+  cnt = 5
   for url in urls:
     driver.get(url)
     print "  access to", url,
@@ -64,7 +64,6 @@ def getMalware(driver, urls):
     ### make dom data ###
     print "    Get dom",
     dom1 = lxml.html.fromstring(driver.page_source)
-    #dom2 = etree.XML(driver.page_source)
     print "-> suceess."
 
     ### Get anchors to Donwload Bottun
@@ -77,10 +76,55 @@ def getMalware(driver, urls):
         #-----#
         if "/analysis/file" in anchor.attrib['href']:
           print "    Download url -> ", anchor.attrib['href']
-          #driver.find_element_by_xpath(u"//a[contains(text(), 'Download')]").click()
+          driver.find_element_by_xpath(u"//a[contains(text(), 'Download')]").click()
           time.sleep(1)
         #-----#
       #-----#
     time.sleep(1)
+    cnt -= 1
+    if cnt == 0:
+      break
+
+def getMalware(driver, urls):
+
+  print "=================================="
+  print "|   access to Malware DL page.   |" 
+  print "=================================="
   
+  # This function is download test for debug
+  dlTest( driver, urls)
+  """
+  for url in urls:
+    driver.get(url)
+    print "  access to", url,
+    element = WebDriverWait(driver, 10).until( EC.presence_of_element_located((By.ID, "file")))
+    print "-> suceess."
+
+    ### Error Text check###
+    if '<li class="text-error">' in driver.page_source:
+      print "  This malware has error text."
+      errorText = driver.find_element_by_class_name('text-error')
+      print errorText.text
+    
+    ### make dom data ###
+    print "    Get dom",
+    dom1 = lxml.html.fromstring(driver.page_source)
+    print "-> suceess."
+
+    ### Get anchors to Donwload Bottun
+    dlButton = dom1.xpath(u"//a[contains(text(), 'Download')]")
+    for anchor in dlButton:
+      #-----#
+      if anchor.attrib.has_key('disabled'):
+        print "  This file is not shared :-<"
+      else:
+        #-----#
+        if "/analysis/file" in anchor.attrib['href']:
+          print "    Download url -> ", anchor.attrib['href']
+          driver.find_element_by_xpath(u"//a[contains(text(), 'Download')]").click()
+          time.sleep(1)
+        #-----#
+      #-----#
+    time.sleep(1)
+  """
   return driver

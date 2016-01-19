@@ -22,37 +22,37 @@ def dirCheck():
     os.makedirs("./malwr")
   return
   
-def pyEnd(driver, display):
+def pyEnd(myDriver, display):
   print "Script End."
-  # quit driver
-  if driver is not None:
-    driver.close()
-    driver.quit()
+  # quit myDriver
+  if myDriver is not None:
+    myDriver.close()
+    myDriver.quit()
   # stop virtual display
   if display is not None:
     display.stop()
   return
 
 def main():
+  print "Set Virtual Display",
+  display = displayMod.setDisplay()
+  print "-> success"
+  print "Set Browser Profile",
+  myDriver = browserMod.setDriver()
+  print "-> success"
   try:
-    print "Set Virtual Display",
-    display = displayMod.setDisplay()
-    print "-> success"
-    print "Set Browser Profile",
-    driver = browserMod.setDriver()
-    print "-> success"
-    driver = Login.login(driver)
-    driver,urls = malwrGet.getDlUrls(driver)
+    myDriver = Login.login(myDriver)
+    myDriver,urls = malwrGet.getDlUrls(myDriver)
     #print urls
-    driver = malwrGet.getMalware(driver, urls)
-    driver = Login.logout(driver)
+    myDriver = malwrGet.getMalware(myDriver, urls)
+    myDriver = Login.logout(myDriver)
 
-    pyEnd(driver, display)
+    pyEnd(myDriver, display)
 
   except:
-    print "-----!!!Error occured!!!-----"
-    Login.logout(driver)
-    pyEnd(driver, display)
+    print "\n-----!!!Error occured!!!-----"
+    Login.logout(myDriver)
+    pyEnd(myDriver, display)
     pass
   return
 
