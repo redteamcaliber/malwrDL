@@ -76,6 +76,7 @@ def dlTest( driver, urls):
         #-----#
         if "/analysis/file" in anchor.attrib['href']:
           print "    Download url -> ", anchor.attrib['href']
+          driver.execute_script('window.scrollTo(0, 300)')
           driver.find_element_by_xpath(u"//a[contains(text(), 'Download')]").click()
           driver.save_screenshot("screen.png")
           time.sleep(1)
