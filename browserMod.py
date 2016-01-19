@@ -18,6 +18,7 @@ def setDriver():
   profile.set_preference('browser.download.folderList', 0)
   """
   # ブラウザのダウンロードディレクトリ(スクリプトが存在するディレクトリ)を指定
+  profile.set_preference('browser.download.folderList', 2)
   profile.set_preference('browser.download.dir', os.getcwd()+"/malwr")
   
   # ダウンロード時の警告画面を表示させない

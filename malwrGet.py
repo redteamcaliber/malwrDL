@@ -76,9 +76,13 @@ def dlTest( driver, urls):
         #-----#
         if "/analysis/file" in anchor.attrib['href']:
           print "    Download url -> ", anchor.attrib['href']
+          # when click "Download" button, Selenium scrolls the browser in automatic to get indicated element.
+          # malwr.com has menu iframe and overlap this iframe to "Download" button.
+          # So, let selenium scroll in manual for overlapping "Download" button.
           driver.execute_script('window.scrollTo(0, 300)')
+
           driver.find_element_by_xpath(u"//a[contains(text(), 'Download')]").click()
-          driver.save_screenshot("screen.png")
+          #driver.save_screenshot("screen.png")
           time.sleep(1)
         #-----#
       #-----#
@@ -94,8 +98,9 @@ def getMalware(driver, urls):
   print "=================================="
   
   # This function is download test for debug
-  dlTest( driver, urls)
-  """
+  #dlTest( driver, urls)
+
+  #"""
   for url in urls:
     driver.get(url)
     print "  access to", url,
@@ -123,10 +128,11 @@ def getMalware(driver, urls):
         #-----#
         if "/analysis/file" in anchor.attrib['href']:
           print "    Download url -> ", anchor.attrib['href']
+          driver.execute_script('window.scrollTo(0, 300)')
           driver.find_element_by_xpath(u"//a[contains(text(), 'Download')]").click()
           time.sleep(1)
         #-----#
       #-----#
     time.sleep(1)
-  """
+  #"""
   return driver
