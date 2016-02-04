@@ -1,18 +1,7 @@
 # coding: utf-8
-import hashlib
+import lxml.html
+from lxml import etree
 
-def getSha1Hash( malware):
-  h = hashlib.sha1()
-  while True:
-    d = f.read(64*1024) # 64KB
-    if ( d ):
-      h.update(d)
-    else:
-      break
-  return h.hexdigest()
-
-def saveMalware():
-  for 
-  f = open( "./malware/" + malware, "rb")
-  f.close()
-  
+def sha1txt( dom):
+  sha_dom = dom.get_element_by_id('file').xpath(u".//*[contains(text(), 'SHA1')]")
+  return sha_dom[0].getparent().xpath(u"./td")[0].text
