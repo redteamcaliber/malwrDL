@@ -104,9 +104,9 @@ def getMalware(driver, urls):
   print "=================================="
   
   # This function is download test for debug
-  dlTest( driver, urls)
+  #dlTest( driver, urls)
 
-  """
+  #"""
   for url in urls:
     driver.get(url)
     print "  access to", url,
@@ -124,6 +124,11 @@ def getMalware(driver, urls):
     dom1 = lxml.html.fromstring(driver.page_source)
     print "-> suceess."
 
+    ### make dom data ###
+    print "    Get SHA-1",
+    sha1 = getSha1.sha1txt( dom1)
+    print "-> executed. :", sha1
+
     ### Get anchors to Donwload Bottun
     dlButton = dom1.xpath(u"//a[contains(text(), 'Download')]")
     for anchor in dlButton:
@@ -140,5 +145,5 @@ def getMalware(driver, urls):
         #-----#
       #-----#
     time.sleep(1)
-  """
+  #"""
   return driver
