@@ -11,6 +11,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 import lxml.html
 from lxml import etree
 import time
+import mysql
 import getSha1
 
 def getDlUrls(driver):
@@ -50,6 +51,7 @@ def dlTest( driver, urls):
   print "----------------------------"
 
   cnt = 5
+  db = mysql.mysql()
   for url in urls:
     driver.get(url)
     print "  access to", url,
@@ -70,32 +72,37 @@ def dlTest( driver, urls):
     ### make dom data ###
     print "    Get SHA-1",
     sha1 = getSha1.sha1txt( dom1)
-    print "-> executed. :", sha1
+    if not db.mysql_insert(sha1):
+      time.sleep(20)
+      if not virustotal_search.virustotal_api( db, sha1):
+        pass
+    #print "-> executed. :", sha1
+      else:
+        downloadClick( driver, dom1)
 
     ### Get anchors to Donwload Bottun
-    dlButton = dom1.xpath(u"//a[contains(text(), 'Download')]")
-    for anchor in dlButton:
-      #-----#
-      if anchor.attrib.has_key('disabled'):
-        print "  This file is not shared :-<"
-      else:
-        #-----#
-        if "/analysis/file" in anchor.attrib['href']:
-          print "    Download url -> ", anchor.attrib['href']
-          # when click "Download" button, Selenium scrolls the browser in automatic to get indicated element.
-          # malwr.com has menu iframe and overlap this iframe to "Download" button.
-          # So, let selenium scroll in manual for overlapping "Download" button.
-          driver.execute_script('window.scrollTo(0, 300)')
-
-          driver.find_element_by_xpath(u"//a[contains(text(), 'Download')]").click()
-          #driver.save_screenshot("screen.png")
-          time.sleep(1)
-        #-----#
-      #-----#
-    time.sleep(1)
+    downloadClick( driver, dom1)
     cnt -= 1
     if cnt == 0:
       break
+
+def downloadClick( driver, dom):
+  ### Get anchors to Donwload Bottun
+  dlButton = dom.xpath(u"//a[contains(text(), 'Download')]")
+  for anchor in dlButton:
+    #-----#
+    if anchor.attrib.has_key('disabled'):
+      print "  This file is not shared :-<"
+    else:
+      #-----#
+      if "/analysis/file" in anchor.attrib['href']:
+        print "    Download url -> ", anchor.attrib['href']
+        driver.execute_script('window.scrollTo(0, 300)')
+        driver.find_element_by_xpath(u"//a[contains(text(), 'Download')]").click()
+        time.sleep(1)
+      #-----#
+    #-----#
+  time.sleep(1)
 
 def getMalware(driver, urls):
 
@@ -104,9 +111,13 @@ def getMalware(driver, urls):
   print "=================================="
   
   # This function is download test for debug
-  #dlTest( driver, urls)
+  dlTest( driver, urls)
 
-  #"""
+  """
+
+  # connect to malware database
+  db = mysql.mysql()
+
   for url in urls:
     driver.get(url)
     print "  access to", url,
@@ -127,23 +138,12 @@ def getMalware(driver, urls):
     ### make dom data ###
     print "    Get SHA-1",
     sha1 = getSha1.sha1txt( dom1)
-    print "-> executed. :", sha1
-
-    ### Get anchors to Donwload Bottun
-    dlButton = dom1.xpath(u"//a[contains(text(), 'Download')]")
-    for anchor in dlButton:
-      #-----#
-      if anchor.attrib.has_key('disabled'):
-        print "  This file is not shared :-<"
+    if not db.mysql_insert(sha1):
+      time.sleep(20)
+      if not virustotal_search.virustotal_api( db, sha1):
+        pass
+    #print "-> executed. :", sha1
       else:
-        #-----#
-        if "/analysis/file" in anchor.attrib['href']:
-          print "    Download url -> ", anchor.attrib['href']
-          driver.execute_script('window.scrollTo(0, 300)')
-          driver.find_element_by_xpath(u"//a[contains(text(), 'Download')]").click()
-          time.sleep(1)
-        #-----#
-      #-----#
-    time.sleep(1)
-  #"""
+        downloadClick( driver, dom1)
+  """
   return driver
